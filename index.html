@@ -68,7 +68,10 @@
   </section>
 
   <section class="card" aria-labelledby="notes-heading">
-    <div class="card-head"><h3 id="notes-heading">Notes</h3></div>
+    <div class="card-head">
+      <h3 id="notes-heading">Notes</h3>
+      <button type="button" id="all-notes-btn" class="ghost small">All notes</button>
+    </div>
     <ul id="note-list" class="note-list"></ul>
     <p id="note-empty" class="empty">No notes for this day.</p>
     <form id="note-form" class="note-form">
@@ -164,6 +167,23 @@
       <button type="button" id="destroy-btn" class="danger">Delete permanently, including history</button>
     </div>
   </div>
+</dialog>
+
+<!-- All notes -->
+<dialog id="notes-dialog" class="sheet">
+  <div class="sheet-head">
+    <h2>All notes</h2>
+    <button type="button" class="ghost" data-close>Done</button>
+  </div>
+  <div class="note-filters">
+    <label class="visually-hidden" for="note-search">Search notes</label>
+    <input type="search" id="note-search" placeholder="Search notes&hellip;" autocomplete="off">
+    <label class="visually-hidden" for="note-filter-med">Filter by medication</label>
+    <select id="note-filter-med"><option value="">All medications</option></select>
+  </div>
+  <p id="note-count" class="hint"></p>
+  <ul id="all-note-list" class="note-list"></ul>
+  <button type="button" id="note-more" class="ghost" hidden>Show more</button>
 </dialog>
 
 <!-- Data -->

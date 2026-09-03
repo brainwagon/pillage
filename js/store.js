@@ -184,6 +184,13 @@ export async function deleteNote(note) {
   await db.del(db.NOTES, note.key);
 }
 
+// Every Note, newest first. Note keys begin with the Day and then the
+// creation time, so key order is already chronological.
+export async function listAllNotes() {
+  const notes = await db.getAll(db.NOTES);
+  return notes.reverse();
+}
+
 /* --- reading a day ---------------------------------------------------- */
 
 export async function readDay(day) {

@@ -406,6 +406,95 @@ async function doImport(file) {
   showDataMessage(`Restored ${incoming.medications} medications, ${incoming.doses} dose records and ${incoming.notes} notes.`);
 }
 
+/* --- all notes -------------------------------------------------------- */
+
+const NOTES_PAGE = 40;
+
+const allNotes = { notes: [], medications: [], shown: NOTES_PAGE, query: '', medicationId: '' };
+
+function matchingNotes() {
+  const query = allNotes.query.trim().toLowerCase();
+  return allNotes.notes.filter((note) => {
+    if (allNotes.medicationId && note.medicationId !== allNotes.medicationId) return false;
+    return !query || note.text.toLowerCase().includes(query);
+  });
+}
+
+function renderAllNotes() {
+  const list = $('all-note-list');
+  clear(list);
+
+  const matches = matchingNotes();
+  const page = matches.slice(0, allNotes.shown);
+  const names = new Map(allNotes.medications.map((m) => [m.id, m.name]));
+
+  let day = null;
+  for (const note of page) {
+    if (note.day !== day) {
+      day = note.day;
+      // The heading doubles as navigation: open the Day this Note belongs to.
+      const jump = el('button', {
+        type: 'button',
+        className: 'note-day-jump',
+        textContent: dayName(note.day) ?? formatDay(note.day),
+        title: 'Open this day',
+      });
+      jump.addEventListener('click', () => {
+        $('notes-dialog').close();
+        goTo(note.day);
+      });
+      list.append(el('li', { className: 'note-day' }, jump));
+    }
+
+    const meta = [el('span', { textContent: formatTime(note.createdAt) })];
+    const name = names.get(note.medicationId);
+    if (name) meta.push(el('span', { className: 'chip', textContent: name }));
+    if (note.editedAt) meta.push(el('span', { textContent: 'edited' }));
+
+    list.append(el('li', {}, [
+      el('div', { className: 'note-meta' }, meta),
+      el('p', { className: 'note-text', textContent: note.text }),
+    ]));
+  }
+
+  const filtered = allNotes.query.trim() || allNotes.medicationId;
+  if (matches.length === 0) {
+    $('note-count').textContent = allNotes.notes.length === 0
+      ? 'No notes yet.'
+      : 'No notes match that.';
+  } else if (filtered) {
+    $('note-count').textContent = `${matches.length} of ${allNotes.notes.length} notes.`;
+  } else {
+    $('note-count').textContent = `${matches.length} ${matches.length === 1 ? 'note' : 'notes'}.`;
+  }
+
+  const more = $('note-more');
+  more.hidden = page.length >= matches.length;
+  more.textContent = `Show ${Math.min(NOTES_PAGE, matches.length - page.length)} more`;
+}
+
+async function openAllNotes() {
+  [allNotes.notes, allNotes.medications] = await Promise.all([
+    store.listAllNotes(),
+    store.listMedications(),
+  ]);
+  allNotes.shown = NOTES_PAGE;
+  allNotes.query = '';
+  allNotes.medicationId = '';
+  $('note-search').value = '';
+
+  // Archived medications are included: their notes outlive the daily list.
+  const select = $('note-filter-med');
+  clear(select);
+  select.append(el('option', { value: '', textContent: 'All medications' }));
+  for (const medication of allNotes.medications) {
+    select.append(el('option', { value: medication.id, textContent: medication.name }));
+  }
+
+  renderAllNotes();
+  $('notes-dialog').showModal();
+}
+
 /* --- storage warning -------------------------------------------------- */
 
 // WebKit deletes all script-writable storage for a site after seven days of
@@ -458,6 +547,22 @@ function wire() {
   $('prev-day').addEventListener('click', () => goTo(addDays(state.day, -1)));
   $('next-day').addEventListener('click', () => goTo(addDays(state.day, 1)));
   $('today-btn').addEventListener('click', () => goTo(today()));
+  $('all-notes-btn').addEventListener('click', openAllNotes);
+  $('note-search').addEventListener('input', (event) => {
+    allNotes.query = event.target.value;
+    allNotes.shown = NOTES_PAGE;
+    renderAllNotes();
+  });
+  $('note-filter-med').addEventListener('change', (event) => {
+    allNotes.medicationId = event.target.value;
+    allNotes.shown = NOTES_PAGE;
+    renderAllNotes();
+  });
+  $('note-more').addEventListener('click', () => {
+    allNotes.shown += NOTES_PAGE;
+    renderAllNotes();
+  });
+
   $('dismiss-warning').addEventListener('click', dismissWarning);
 
   $('day-picker').addEventListener('change', (event) => {

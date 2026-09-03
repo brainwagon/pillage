@@ -314,6 +314,31 @@ main {
 
 .note-actions { display: flex; gap: 0.25rem; margin-left: auto; }
 
+.note-filters { display: flex; gap: 0.5rem; margin-bottom: 0.6rem; }
+.note-filters input { flex: 1 1 55%; min-width: 0; }
+.note-filters select { flex: 1 1 45%; min-width: 0; }
+
+.note-day { border-bottom: none !important; padding: 0.75rem 0 0.15rem !important; }
+.note-day:first-child { padding-top: 0 !important; }
+
+.note-day-jump {
+  /* The list items are grids, so a button stretches and centres its label. */
+  justify-self: start;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  min-height: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.note-day-jump:hover { text-decoration: underline; }
+
+#note-more { width: 100%; margin-top: 0.75rem; }
+
 .note-form { display: grid; gap: 0.5rem; margin-top: 0.75rem; }
 .note-form-row { display: flex; gap: 0.5rem; }
 .note-form-row select { flex: 1; min-width: 0; }
