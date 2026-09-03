@@ -88,9 +88,19 @@ app does not keep.
 
 The app calls `navigator.storage.persist()` on first run, which asks the
 browser not to evict the data. Chromium and Firefox only evict under real disk
-pressure. Safari and every browser on iOS delete script-writable storage after
-seven days of Safari use without visiting the site — installing pillage to the
-home screen exempts it from that.
+pressure.
+
+**Safari and every browser on iOS are a different matter.** WebKit deletes a
+site's script-writable storage after seven days of Safari use without a visit,
+which would take the whole log with it. pillage detects those browsers and
+shows a warning saying so. Adding the app to the Home Screen exempts it from
+that rule, and the warning hides itself when you have.
+
+Detection is by feature, not by user agent — every desktop browser's user agent
+string contains the word "WebKit", so matching on that would flag Chrome and
+Edge too. `js/app.js` uses the WebKit-only `GestureEvent` interface plus
+`navigator.vendor`, which the HTML specification pins to `"Apple Computer, Inc."`
+for WebKit.
 
 This is a personal log, not a medical device. It will not remind you, and it
 cannot tell you whether a dose was safe to take or to skip.

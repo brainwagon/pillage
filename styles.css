@@ -9,6 +9,8 @@
   --accent: #1d5c56;
   --accent-text: #ffffff;
   --danger: #9c2b20;
+  --warning-bg: #fdf3f2;
+  --warning-border: #f0cdc9;
   --radius: 12px;
   --shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 4px 14px rgb(0 0 0 / 0.05);
 }
@@ -24,6 +26,8 @@
     --accent: #4fb3a3;
     --accent-text: #07120f;
     --danger: #e0796b;
+    --warning-bg: #2a1c1a;
+    --warning-border: #4a2b27;
     --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 14px rgb(0 0 0 / 0.3);
   }
 }
@@ -150,6 +154,28 @@ main {
 .progress { font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 
 .empty { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+/* --- storage warning --- */
+
+.warning {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--warning-border);
+  border-left: 4px solid #ca2128;
+  border-radius: var(--radius);
+  background: var(--warning-bg);
+  box-shadow: var(--shadow);
+}
+
+.warning-icon { flex: 0 0 auto; width: 28px; height: 28px; margin-top: 0.1rem; }
+
+.warning-body { min-width: 0; }
+.warning-body > strong { display: block; margin-bottom: 0.35rem; }
+.warning-body p { margin: 0 0 0.5rem; font-size: 0.88rem; color: var(--muted); }
+.warning-body p:last-child { margin-bottom: 0; }
+.warning-body p strong { color: var(--text); }
 
 /* --- adherence strip --- */
 

@@ -406,6 +406,32 @@ async function doImport(file) {
   showDataMessage(`Restored ${incoming.medications} medications, ${incoming.doses} dose records and ${incoming.notes} notes.`);
 }
 
+/* --- storage warning -------------------------------------------------- */
+
+// WebKit deletes all script-writable storage for a site after seven days of
+// Safari use without a visit, which would take the whole log with it.
+//
+// Detection is by feature, never by user agent: every desktop browser's user
+// agent string contains the word "WebKit", so matching on it flags Chrome and
+// Edge too. GestureEvent is a WebKit-only interface, and navigator.vendor
+// catches the browsers on iOS and iPadOS, which are all WebKit underneath
+// whatever name is on the icon.
+function isWebKitEngine() {
+  if (typeof window.GestureEvent !== 'undefined') return true;
+  return navigator.vendor === 'Apple Computer, Inc.';
+}
+
+// A web app added to the Home Screen is exempt from the seven-day rule, so
+// warning there would be false.
+function isInstalled() {
+  if (navigator.standalone === true) return true;
+  return window.matchMedia?.('(display-mode: standalone)').matches === true;
+}
+
+function renderStorageWarning() {
+  $('storage-warning').hidden = !isWebKitEngine() || isInstalled();
+}
+
 /* --- wiring ----------------------------------------------------------- */
 
 function wire() {
@@ -560,6 +586,7 @@ function wire() {
 
 async function main() {
   wire();
+  renderStorageWarning();
   await refresh();
 
   // Ask the browser not to evict us. Chrome decides silently, Firefox may
