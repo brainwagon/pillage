@@ -223,7 +223,9 @@ export async function readDay(day) {
     day,
     rows,
     // Newest first, matching the all-notes view: a log reads backwards.
-    notes: notes.sort((a, b) => b.createdAt - a.createdAt),
+    // Two Notes written in the same millisecond fall back to the key, which
+    // is how the all-notes view breaks the tie, so the views cannot disagree.
+    notes: notes.sort((a, b) => b.createdAt - a.createdAt || b.key.localeCompare(a.key)),
     medications,
     total,
     done,
