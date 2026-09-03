@@ -96,6 +96,10 @@ which would take the whole log with it. pillage detects those browsers and
 shows a warning saying so. Adding the app to the Home Screen exempts it from
 that rule, and the warning hides itself when you have.
 
+The warning can be dismissed. The dismissal is kept in `localStorage`, which
+WebKit erases along with everything else — so if the eviction it warns about
+ever happens, the warning comes back, which is exactly when it should.
+
 Detection is by feature, not by user agent — every desktop browser's user agent
 string contains the word "WebKit", so matching on that would flag Chrome and
 Edge too. `js/app.js` uses the WebKit-only `GestureEvent` interface plus

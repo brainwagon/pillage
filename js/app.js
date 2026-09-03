@@ -428,8 +428,28 @@ function isInstalled() {
   return window.matchMedia?.('(display-mode: standalone)').matches === true;
 }
 
+const WARNING_DISMISSED = 'pillage.storageWarningDismissed';
+
+// The dismissal lives in localStorage, which WebKit erases along with
+// everything else. So if the eviction this warns about ever happens, the
+// warning comes back -- which is exactly when it should.
+function warningDismissed() {
+  try {
+    return localStorage.getItem(WARNING_DISMISSED) === '1';
+  } catch {
+    return false; // private mode can throw on access; warn rather than not
+  }
+}
+
+function dismissWarning() {
+  try {
+    localStorage.setItem(WARNING_DISMISSED, '1');
+  } catch { /* not remembered, but still hidden for this visit */ }
+  $('storage-warning').hidden = true;
+}
+
 function renderStorageWarning() {
-  $('storage-warning').hidden = !isWebKitEngine() || isInstalled();
+  $('storage-warning').hidden = !isWebKitEngine() || isInstalled() || warningDismissed();
 }
 
 /* --- wiring ----------------------------------------------------------- */
@@ -438,6 +458,8 @@ function wire() {
   $('prev-day').addEventListener('click', () => goTo(addDays(state.day, -1)));
   $('next-day').addEventListener('click', () => goTo(addDays(state.day, 1)));
   $('today-btn').addEventListener('click', () => goTo(today()));
+  $('dismiss-warning').addEventListener('click', dismissWarning);
+
   $('day-picker').addEventListener('change', (event) => {
     if (event.target.value) goTo(event.target.value);
     else renderDayHeader(); // cleared picker: put the current day back
