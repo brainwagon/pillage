@@ -105,8 +105,15 @@
       <h2>Medications</h2>
       <button type="button" class="ghost" data-close>Done</button>
     </div>
+    <button type="button" id="show-add" class="add-cta">Add a medication</button>
     <ul id="manage-list" class="manage-list"></ul>
-    <h3 class="sheet-sub">Add a medication</h3>
+  </div>
+
+  <div data-pane="add" hidden>
+    <div class="sheet-head">
+      <h2>Add a medication</h2>
+      <button type="button" class="ghost" id="add-back">Back</button>
+    </div>
     <form id="add-form" class="stack">
       <label>Name
         <input type="text" id="add-name" required maxlength="80" placeholder="Lisinopril" autocomplete="off">

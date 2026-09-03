@@ -602,11 +602,24 @@ function wire() {
 
   $('manage-btn').addEventListener('click', async () => {
     showPane('list');
-    $('add-since').value = today();
-    $('add-since').max = today();
     await renderManage();
     $('med-dialog').showModal();
   });
+
+  // The add form lives in its own pane. Inline at the foot of the list, it
+  // was pushed below the fold by every medication the user owned -- so the
+  // more they had, the harder it was to add another.
+  $('show-add').addEventListener('click', () => {
+    $('add-form').reset();
+    $('add-doses').value = '1';
+    $('add-since').value = today();
+    $('add-since').max = today();
+    $('add-restore').hidden = true;
+    showPane('add');
+    $('add-name').focus();
+  });
+
+  $('add-back').addEventListener('click', () => showPane('list'));
 
   $('edit-back').addEventListener('click', () => { state.editing = null; showPane('list'); });
 
@@ -634,6 +647,7 @@ function wire() {
       $('add-name').value = '';
       hint.hidden = true;
       await refresh();
+      showPane('list');
     });
     hint.append(button);
     hint.hidden = false;
@@ -648,10 +662,9 @@ function wire() {
       since: $('add-since').value || today(),
     });
     event.target.reset();
-    $('add-doses').value = '1';
-    $('add-since').value = today();
     $('add-restore').hidden = true;
     await refresh();
+    showPane('list');
   });
 
   $('edit-form').addEventListener('submit', async (event) => {

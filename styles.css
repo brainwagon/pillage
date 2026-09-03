@@ -345,6 +345,8 @@ main {
 
 /* --- manage list --- */
 
+.add-cta { width: 100%; margin-bottom: 0.75rem; }
+
 .manage-list > li {
   display: flex;
   align-items: center;
@@ -440,7 +442,7 @@ textarea { resize: vertical; }
      scrollbar; 100vw does not, and overflows the page by its width. */
   width: 34rem;
   max-width: calc(100% - 2rem);
-  max-height: min(46rem, calc(100dvh - 2rem));
+  max-height: min(46rem, calc(100dvh - 4rem));
   overflow-y: auto;
   overscroll-behavior: contain;
   box-shadow: var(--shadow);
