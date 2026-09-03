@@ -443,6 +443,10 @@ textarea { resize: vertical; }
   text-align: center;
 }
 
+.footer p { margin: 0 0 0.4rem; }
+.footer p:last-child { margin-bottom: 0; }
+.footer strong { color: var(--text); font-weight: 600; }
+
 .visually-hidden {
   position: absolute;
   width: 1px; height: 1px;
