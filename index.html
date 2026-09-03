@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pillage</title>
+<meta name="description" content="A private medication log that never leaves your device.">
+<meta name="theme-color" content="#1d5c56">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./icon.svg">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <img class="mascot" src="./doctor.png" alt="" width="400" height="408" decoding="async">
+  <h1>pillage</h1>
+  <p class="tagline">Did you take your pills?</p>
+  <div class="topbar-actions">
+    <button type="button" id="manage-btn" class="ghost">Medications</button>
+    <button type="button" id="data-btn" class="ghost">Data</button>
+  </div>
+</header>
+
+<nav class="daynav" aria-label="Choose a day">
+  <button type="button" id="prev-day" class="arrow" aria-label="Previous day">&#8249;</button>
+  <div class="daynav-label">
+    <h2 id="day-title">&nbsp;</h2>
+    <input type="date" id="day-picker" class="day-picker" aria-label="Jump to a date">
+    <button type="button" id="today-btn" class="ghost small" hidden>Back to today</button>
+  </div>
+  <button type="button" id="next-day" class="arrow" aria-label="Next day">&#8250;</button>
+</nav>
+
+<main>
+  <section class="card" aria-labelledby="doses-heading">
+    <div class="card-head">
+      <h3 id="doses-heading">Doses</h3>
+      <span id="day-progress" class="progress"></span>
+    </div>
+    <ul id="med-list" class="med-list"></ul>
+    <p id="med-empty" class="empty" hidden></p>
+  </section>
+
+  <section class="card" aria-labelledby="notes-heading">
+    <div class="card-head"><h3 id="notes-heading">Notes</h3></div>
+    <ul id="note-list" class="note-list"></ul>
+    <p id="note-empty" class="empty">No notes for this day.</p>
+    <form id="note-form" class="note-form">
+      <textarea id="note-text" rows="2" placeholder="Felt dizzy after lunch&hellip;" required></textarea>
+      <div class="note-form-row">
+        <label class="visually-hidden" for="note-med">About which medication?</label>
+        <select id="note-med"><option value="">No medication</option></select>
+        <button type="submit">Add note</button>
+      </div>
+    </form>
+  </section>
+  <section class="card" aria-labelledby="strip-heading">
+    <div class="card-head"><h3 id="strip-heading">Last 30 days</h3></div>
+    <ol id="strip" class="strip"></ol>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>Everything you enter stays in this browser. Nothing is ever sent to a server.</p>
+</footer>
+
+<!-- Medications -->
+<dialog id="med-dialog" class="sheet">
+  <div data-pane="list">
+    <div class="sheet-head">
+      <h2>Medications</h2>
+      <button type="button" class="ghost" data-close>Done</button>
+    </div>
+    <ul id="manage-list" class="manage-list"></ul>
+    <h3 class="sheet-sub">Add a medication</h3>
+    <form id="add-form" class="stack">
+      <label>Name
+        <input type="text" id="add-name" required maxlength="80" placeholder="Lisinopril" autocomplete="off">
+      </label>
+      <p id="add-restore" class="hint" hidden></p>
+      <div class="row">
+        <label>Doses per day
+          <input type="number" id="add-doses" value="1" min="1" max="12" required>
+        </label>
+        <label>Taking since
+          <input type="date" id="add-since" required>
+        </label>
+      </div>
+      <label>Dose labels <span class="hint-inline">optional, comma separated</span>
+        <input type="text" id="add-labels" placeholder="Morning, Evening" autocomplete="off">
+      </label>
+      <button type="submit">Add medication</button>
+    </form>
+  </div>
+
+  <div data-pane="edit" hidden>
+    <div class="sheet-head">
+      <h2 id="edit-title">Edit</h2>
+      <button type="button" class="ghost" id="edit-back">Back</button>
+    </div>
+    <form id="edit-form" class="stack">
+      <label>Name
+        <input type="text" id="edit-name" required maxlength="80">
+      </label>
+      <label>Taking since <span class="hint-inline">move this back to record earlier days</span>
+        <input type="date" id="edit-since" required>
+      </label>
+      <button type="submit">Save</button>
+    </form>
+
+    <h3 class="sheet-sub">Regimen history</h3>
+    <p class="hint">Past days always show the doses that applied at the time, so changing your dose never rewrites your history.</p>
+    <ul id="regimen-list" class="regimen-list"></ul>
+    <form id="regimen-form" class="stack">
+      <div class="row">
+        <label>New dose count
+          <input type="number" id="regimen-doses" min="1" max="12" required>
+        </label>
+        <label>Starting from
+          <input type="date" id="regimen-from" required>
+        </label>
+      </div>
+      <label>Dose labels <span class="hint-inline">optional, comma separated</span>
+        <input type="text" id="regimen-labels" placeholder="Morning, Evening" autocomplete="off">
+      </label>
+      <button type="submit" class="ghost">Record dose change</button>
+    </form>
+
+    <h3 class="sheet-sub">Danger zone</h3>
+    <div class="stack">
+      <button type="button" id="archive-btn" class="ghost"></button>
+      <p class="hint" id="archive-hint"></p>
+      <button type="button" id="destroy-btn" class="danger">Delete permanently, including history</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Data -->
+<dialog id="data-dialog" class="sheet">
+  <div class="sheet-head">
+    <h2>Your data</h2>
+    <button type="button" class="ghost" data-close>Done</button>
+  </div>
+  <p id="storage-status" class="hint"></p>
+  <div class="stack">
+    <button type="button" id="export-btn">Export a backup file</button>
+    <p class="hint">
+      This browser is the only place your data exists. It is not synced, and it
+      does not follow you to another device or another browser. A backup file is
+      the only way to move or recover it.
+    </p>
+    <button type="button" id="import-btn" class="ghost">Restore from a backup file&hellip;</button>
+    <input type="file" id="import-input" accept="application/json,.json" hidden>
+    <p class="hint">Restoring <strong>replaces</strong> everything currently stored here.</p>
+  </div>
+  <p id="data-message" class="message" hidden></p>
+</dialog>
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
