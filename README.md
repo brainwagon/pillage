@@ -4,7 +4,7 @@ A medication log that runs entirely in your browser. No account, no server, no
 network traffic. Everything you enter is stored in IndexedDB on the device you
 typed it on.
 
-**[Open pillage →](https://brainwagon.github.io/pillage/)**
+**[Open pillage →](https://mvandewettering.com/pillage/)**
 
 ![The pillage day view: a doctor mascot in the masthead, a Doses card with
 Lisinopril and Vitamin D checked off, a Notes card, and a 30-day adherence
