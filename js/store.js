@@ -222,7 +222,8 @@ export async function readDay(day) {
   return {
     day,
     rows,
-    notes: notes.sort((a, b) => a.createdAt - b.createdAt),
+    // Newest first, matching the all-notes view: a log reads backwards.
+    notes: notes.sort((a, b) => b.createdAt - a.createdAt),
     medications,
     total,
     done,

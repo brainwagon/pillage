@@ -44,7 +44,7 @@ Day be rendered honestly.
 ### Note
 
 Timestamped free text belonging to a [Day](#day). A Day may hold any number
-of them, shown oldest first. A Note may optionally reference one
+of them, shown newest first. A Note may optionally reference one
 [Medication](#medication), which is what turns "I felt sick that week" into
 "Metformin makes me sick".
 

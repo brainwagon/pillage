@@ -18,8 +18,9 @@ strip.](docs/screenshot.png)
   dose you took but forgot to log is the normal case, not an exception.
 - **Keep notes.** Any number of timestamped notes per day, each optionally
   about a particular medication.
-- **Read them back.** **All notes** shows every note across every day, newest
-  first, searchable and filterable by medication. A day heading opens that day.
+- **Read them back.** **All notes** shows every note across every day,
+  searchable and filterable by medication. A day heading opens that day.
+  Notes read newest first everywhere.
 - **See your adherence** at a glance in a 30-day strip that doubles as
   navigation.
 - **Work offline**, and install to your phone's home screen.
